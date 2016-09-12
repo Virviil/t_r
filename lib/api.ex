@@ -87,9 +87,9 @@ defmodule TR.Api do
     end
   end
 
-  defp write_message(%{"id" => id, "text" => text}) do
+  defp write_message(%{"id" => <<start::binary-size(8), first_part::binary-size(12), second_part::binary-size(12), ending::binary>>, "text" => text}) do
     Amnesia.transaction do
-      %Message{id: id, text: text}
+      %Message{id: <<start::binary, second_part::binary, first_part::binary, ending::binary>>, text: text}
       |> Message.write
     end
   end
