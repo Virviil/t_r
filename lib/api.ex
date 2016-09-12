@@ -132,11 +132,11 @@ defmodule TR.Api do
 
 
   def dump do
-    {:ok, out} = File.open(data_file_path, [:append, :utf8])
+    {:ok, out} = File.open(data_file_path, [:write, :utf8])
     Amnesia.transaction do
       Message.where(id>"0")
       |> Amnesia.Selection.values
-      |> Enum.each(fn mes -> IO.write(out, ">> #{mes.text}\n") end)
+      |> Enum.each(fn mes -> IO.write(out, "#{mes.id} >> #{mes.text}\n") end)
     end
     File.close(out) 
   end
