@@ -50,6 +50,7 @@ defmodule TR.Api do
 
     data = data
     |> Enum.filter(&(text_message?(&1)))
+    |> Enum.map(&adjust_id/1)
 
     write_messages(data)
     set_page(page+1)
@@ -87,9 +88,23 @@ defmodule TR.Api do
     end
   end
 
-  defp write_message(%{"id" => <<start::binary-size(8), first_part::binary-size(12), second_part::binary-size(12), ending::binary>>, "text" => text}) do
+  defp adjust_id(message) do
+    <<_::binary-size(16),
+      f0::binary-size(2),
+      f1::binary-size(2),
+      f2::binary-size(2),
+      f3::binary-size(2),
+      f4::binary-size(2),
+      f5::binary-size(2),
+      f6::binary-size(2),
+      f7::binary-size(2),
+      _::binary>> = message["id"]
+    %{message| "id" => <<f7::binary, f6::binary, f5::binary, f4::binary, f3::binary, f2::binary, f1::binary, f0::binary>>}
+  end
+
+  defp write_message(%{"id" => id, "text" => text}) do
     Amnesia.transaction do
-      %Message{id: <<start::binary, second_part::binary, first_part::binary, ending::binary>>, text: text}
+      %Message{id: id, text: text}
       |> Message.write
     end
   end
