@@ -1,35 +1,27 @@
 # TR
 
-**TODO: Add description**
-
-## Configuration
-
-* Install telegram-cli from source
-
-* Install goon
-
-* Run
-```bash
-mix amnesia.create -db Database --disk
-```
+TR is telegram dialog dumper application. It's running in the background,
+dumps text data of selected telegram dialogs to `mnesia` database. This data
+can be then used anywhere - for example in your `Phoenix` application.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+1. Install [telegram-cli](https://github.com/vysheng/tg). Buildit from the last working source.
+2. Install [goon](https://github.com/alco/goon) from the source.
+3. Clone this repo and get all dependencies:
+```bash
+mix deps.get
+```
 
-  1. Add `t_r` to your list of dependencies in `mix.exs`:
+4. Configure application, making modifications in `config/config.exs`
+as it's done in example `config/config.exs.example` file.
 
-    ```elixir
-    def deps do
-      [{:t_r, "~> 0.1.0"}]
-    end
-    ```
-
-  2. Ensure `t_r` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:t_r]]
-    end
-    ```
+5. Create `mnesia` database, using:
+```bash
+mix amnesia.create -db Database --disk
+```
+6. Start application running
+```bash
+elixir --detached -S mix run
+```
 
