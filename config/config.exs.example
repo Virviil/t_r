@@ -1,11 +1,17 @@
 use Mix.Config
 
+# Configuring main application
 config :t_r,
+  # Represents amount of download messages in one request to history method
+  # of telegram API. Also this is the number of maximum overhead in
+  # downloaded messages
   message_size: 100,
+  # This is the phone number without "+" sign
   phone: 1234567890,
-  data_file_path: "/home/user/data.txt",
-  time_file_path: "/home/user/time.txt"
+  # Represents file path for dump file
+  data_file_path: "/home/user/data.txt"
 
+# Configuring tg_client, check it's documentation
 config :tg_client,
   daemon: "/opt/tg/bin/telegram-cli",
   key: "/opt/tg/tg-server.pub",
@@ -16,6 +22,7 @@ config :tg_client,
   pool_name: :event_handler,
   event_handler: {TR.EventHandler, size: 10, max_overflow: 10}
 
+# Conifguration for quantum. Check it's documentation
 config :quantum, cron: [
   "* * * * *": {TR.Api, :write_to_file}
 ]

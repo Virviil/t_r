@@ -9,16 +9,12 @@ defmodule TR.Api do
     Application.get_env(:t_r, :phone)
   end
 
-  def message_size do
+  def number_of_messages do
     Application.get_env(:t_r, :message_size)
   end
 
   def data_file_path do
     Application.get_env(:t_r, :data_file_path)
-  end
-
-  def time_file_path do
-    Application.get_env(:t_r, :time_file_path)
   end
 
   def write_to_file do
@@ -107,52 +103,5 @@ defmodule TR.Api do
       %Message{id: id, text: text}
       |> Message.write
     end
-  end
-
-  defp set_page(page) do
-    Amnesia.transaction do
-      %Deps{id: 0, page: page}
-      |>Deps.write
-    end
-  end
-
-  defp get_page do
-    Amnesia.transaction do
-      d = Deps.read(0)
-      if d == nil do
-        0
-      else
-        d.page
-      end
-    end
-  end
-
-  defp set_time(time) do
-    Amnesia.transaction do
-      %Time{id: 0, time: time}
-      |> Time.write
-    end
-  end
-
-  defp get_time do
-    Amnesia.transaction do
-      t = Time.read(0)
-      if t == nil do
-        "0"
-      else
-        t.time
-      end
-    end
-  end
-
-
-  def dump do
-    {:ok, out} = File.open(data_file_path, [:write, :utf8])
-    Amnesia.transaction do
-      Message.where(id>"0")
-      |> Amnesia.Selection.values
-      |> Enum.each(fn mes -> IO.write(out, "#{mes.id} >> #{mes.text}\n") end)
-    end
-    File.close(out) 
   end
 end
